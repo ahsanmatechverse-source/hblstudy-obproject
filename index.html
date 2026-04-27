@@ -634,17 +634,44 @@ function validate(){
 }
 
 // ─── DONE ─────────────────────────────────────────────────────────────────────
+const SHEET_URL='https://script.google.com/macros/s/AKfycbzlMISCjT21p5ipQGN2caVpdFFPmaBEitaUIudLAzqjjIoxlJwRkEgByjhrkbDX4wRbNA/exec';
+
+
 function done(){
-  var SHEET_URL = 'https://script.google.com/macros/s/AKfycbzlMISCjT21p5ipQGN2caVpdFFPmaBEitaUIudLAzqjjIoxlJwRkEgByjhrkbDX4wRbNA/exec';
-  ans.role = form.label;
-  fetch(SHEET_URL, {
-    method: 'POST',
-    body: JSON.stringify(ans),
-    headers: {'Content-Type':'application/json'}
-  }).catch(function(){});
+  // Show success immediately — don't make user wait
   document.getElementById('form-wrap').style.display='none';
-  var s=document.getElementById('success');
-  s.style.display='flex';
+  document.getElementById('success').style.display='flex';
+
+  // Build flat payload
+  ans.role = form.label;
+  ans.submitted = new Date().toLocaleString();
+
+  // Flatten multi-select arrays to strings
+  Object.keys(ans).forEach(k=>{
+    if(Array.isArray(ans[k])) ans[k]=ans[k].join(' | ');
+    if(typeof ans[k]==='object' && ans[k]!==null) ans[k]=JSON.stringify(ans[k]);
+  });
+
+  // Method 1: no-cors fetch (fires and forgets — works with Apps Script)
+  fetch(SHEET_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(ans)
+  }).catch(()=>{});
+
+  // Method 2: hidden form POST fallback (backup in case Method 1 blocked)
+  try {
+    var f=document.createElement('form');
+    f.method='POST'; f.action=SHEET_URL; f.target='hidden_iframe'; f.style.display='none';
+    var inp=document.createElement('input');
+    inp.type='hidden'; inp.name='payload'; inp.value=JSON.stringify(ans);
+    f.appendChild(inp);
+    var iframe=document.createElement('iframe');
+    iframe.name='hidden_iframe'; iframe.style.display='none';
+    document.body.appendChild(iframe); document.body.appendChild(f); f.submit();
+  } catch(e){}
+
   console.log('Submitted:',JSON.stringify(ans,null,2));
 }
 </script>
