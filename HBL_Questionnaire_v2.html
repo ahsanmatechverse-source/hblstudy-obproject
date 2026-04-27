@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HBL Culture Study 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#0a1628;--navy2:#152340;--gold:#c9a84c;--gold2:#e8c97a;
+  --pale:#fdf6e3;--cream:#fafaf7;--white:#fff;--gray:#8a8f9e;
+  --light:#f0f2f7;--red:#e05252;--green:#2e7d4f;
+  --r:14px;--sh:0 4px 24px rgba(10,22,40,.08);--shg:0 4px 20px rgba(201,168,76,.2);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);min-height:100vh;overflow-x:hidden}
+
+/* LANDING */
+#landing{
+  min-height:100vh;
+  background:linear-gradient(140deg,#060e1c 0%,#0d1f3c 50%,#162b50 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 20px;position:relative;overflow:hidden;
+}
+#landing::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% -10%,rgba(201,168,76,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.l-chip{
+  background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);
+  color:var(--gold2);font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;padding:6px 16px;border-radius:100px;margin-bottom:28px;
+}
+.l-badge{
+  width:64px;height:64px;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--navy);
+  margin-bottom:24px;box-shadow:var(--shg);
+}
+.l-title{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,46px);font-weight:700;color:#fff;text-align:center;line-height:1.25;max-width:640px;margin-bottom:14px}
+.l-title span{color:var(--gold2)}
+.l-sub{color:rgba(255,255,255,.55);font-size:15px;text-align:center;max-width:480px;line-height:1.7;margin-bottom:44px}
+.role-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-bottom:36px}
+.role-card{
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.09);
+  border-radius:var(--r);padding:26px 28px;cursor:pointer;width:230px;text-align:center;
+  transition:all .3s;position:relative;overflow:hidden;
+}
+.role-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.07),transparent);opacity:0;transition:.3s}
+.role-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--shg)}
+.role-card:hover::after{opacity:1}
+.rc-icon{font-size:32px;margin-bottom:10px}
+.rc-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:5px}
+.rc-desc{font-size:12px;color:rgba(255,255,255,.45);line-height:1.5}
+.l-note{color:rgba(255,255,255,.3);font-size:11px;text-align:center;max-width:460px;line-height:1.7}
+.l-note strong{color:rgba(255,255,255,.5)}
+
+/* HEADER */
+#form-wrap{display:none}
+.hdr{background:var(--navy);padding:14px 28px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100}
+.hdr-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--navy);flex-shrink:0}
+.hdr-text{flex:1}
+.hdr-title{font-size:13px;font-weight:600;color:#fff}
+.hdr-sub{font-size:11px;color:rgba(255,255,255,.4)}
+.hdr-prog{width:160px}
+.prog-bar{height:3px;background:rgba(255,255,255,.1);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:100px;transition:width .5s ease;width:0%}
+.prog-lbl{font-size:10px;color:rgba(255,255,255,.35);margin-top:4px;text-align:right}
+
+/* SECTION HERO */
+.sec-hero{background:linear-gradient(135deg,var(--navy) 0%,#1a2f55 100%);padding:28px 32px;display:flex;align-items:center;gap:16px}
+.sec-icon{width:46px;height:46px;flex-shrink:0;background:rgba(201,168,76,.12);border:1.5px solid rgba(201,168,76,.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sec-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:#fff;margin-bottom:3px}
+.sec-desc{font-size:12px;color:rgba(255,255,255,.45)}
+
+/* BODY */
+.form-body{max-width:740px;margin:0 auto;padding:32px 20px 60px}
+.form-body.anim{animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:32px 0 18px}
+.div-line{flex:1;height:1px;background:rgba(10,22,40,.07)}
+.div-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:var(--pale);padding:4px 12px;border-radius:100px;border:1px solid rgba(201,168,76,.2);white-space:nowrap}
+
+/* DEMO CARD */
+.demo-card{background:var(--white);border:1.5px solid rgba(10,22,40,.06);border-radius:var(--r);padding:24px 26px;box-shadow:var(--sh);margin-bottom:16px}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.df label{font-size:11px;font-weight:700;color:var(--navy);letter-spacing:.3px;display:block;margin-bottom:6px}
+.df label span{color:var(--red)}
+.df select,.df input{
+  width:100%;padding:10px 12px;border:1.5px solid rgba(10,22,40,.1);
+  border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);
+  background:var(--cream);outline:none;transition:.2s;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8f9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;
+}
+.df select:focus,.df input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);background:var(--white)}
+.df select.err,.df input.err{border-color:var(--red)}
+
+/* Q CARD */
+.q-card{background:var(--white);border:1.5px solid rgba(10,22,40,.06);border-radius:var(--r);padding:22px 24px;margin-bottom:14px;box-shadow:var(--sh);transition:.2s}
+.q-card.done{border-color:rgba(201,168,76,.3)}
+.q-card.err{border-color:var(--red);box-shadow:0 0 0 3px rgba(224,82,82,.07)}
+.q-tag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.q-text{font-size:15px;font-weight:500;color:var(--navy);line-height:1.6;margin-bottom:16px}
+.q-text .req{color:var(--red);margin-left:2px}
+.q-hint{font-size:11px;color:var(--gray);margin-bottom:14px;font-style:italic}
+.err-msg{font-size:11px;color:var(--red);margin-top:8px;display:none}
+.q-card.err .err-msg{display:block}
+
+/* MCQ */
+.mcq-list{display:flex;flex-direction:column;gap:8px}
+.mcq-opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:1.5px solid rgba(10,22,40,.07);border-radius:10px;cursor:pointer;transition:.15s;background:var(--cream)}
+.mcq-opt:hover{border-color:var(--gold);background:var(--pale)}
+.mcq-opt.sel{border-color:var(--gold);background:var(--pale);box-shadow:0 0 0 2px rgba(201,168,76,.1)}
+.mcq-dot{width:18px;height:18px;flex-shrink:0;margin-top:1px;border:2px solid rgba(10,22,40,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.15s}
+.mcq-opt.sel .mcq-dot{border-color:var(--gold);background:var(--gold)}
+.mcq-opt.sel .mcq-dot::after{content:'';width:7px;height:7px;background:#fff;border-radius:50%}
+.mcq-box{width:18px;height:18px;flex-shrink:0;margin-top:1px;border:2px solid rgba(10,22,40,.15);border-radius:5px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.mcq-opt.sel .mcq-box{border-color:var(--gold);background:var(--gold)}
+.mcq-opt.sel .mcq-box::after{content:'✓';font-size:11px;color:#fff;font-weight:700;line-height:1}
+.mcq-lbl{font-size:13px;color:var(--navy);line-height:1.5}
+
+/* LIKERT */
+.lik-header{display:grid;grid-template-columns:1fr repeat(5,46px);gap:4px;padding:0 4px;margin-bottom:6px}
+.lik-header span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--gray);text-align:center;line-height:1.3}
+.lik-header span:first-child{text-align:left}
+.lik-row{display:grid;grid-template-columns:1fr repeat(5,46px);gap:4px;align-items:center;padding:9px 8px;border-radius:9px;border:1.5px solid transparent;transition:.2s;margin-bottom:4px}
+.lik-row:hover{background:#f4f6fb}
+.lik-row.done{background:var(--pale);border-color:rgba(201,168,76,.15)}
+.lik-stmt{font-size:13px;color:var(--navy);line-height:1.5;padding-right:8px}
+.lik-btn{width:36px;height:36px;margin:0 auto;border-radius:50%;border:2px solid rgba(10,22,40,.1);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gray);transition:.15s;outline:none}
+.lik-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--pale)}
+.lik-btn.sel{border-color:var(--gold);background:var(--gold);color:#fff;box-shadow:0 2px 8px rgba(201,168,76,.3)}
+
+/* COMMENT */
+.cmt-toggle{display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;background:none;border:1.5px dashed rgba(10,22,40,.1);border-radius:9px;padding:7px 12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--gray);width:100%;transition:.2s}
+.cmt-toggle:hover{border-color:var(--gold);color:var(--gold);background:var(--pale)}
+.cmt-toggle.open{border-style:solid;border-color:var(--gold);color:var(--gold);background:var(--pale)}
+.cmt-toggle .arr{margin-left:auto;font-size:9px;transition:.25s}
+.cmt-toggle.open .arr{transform:rotate(180deg)}
+.cmt-box{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .25s ease}
+.cmt-box.open{max-height:160px;opacity:1}
+.cmt-ta{width:100%;min-height:70px;padding:10px 12px;border:1.5px solid rgba(201,168,76,.3);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);background:var(--pale);resize:none;outline:none;line-height:1.6;margin-top:8px;transition:.2s}
+.cmt-ta:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);background:#fffdf4}
+.cmt-ta::placeholder{color:#c4a85a;font-style:italic}
+.cmt-count{font-size:10px;color:var(--gray);text-align:right;margin-top:3px}
+
+/* SHORT ANSWER */
+.short-ta{width:100%;min-height:90px;padding:12px 14px;border:1.5px solid rgba(10,22,40,.1);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);background:var(--cream);resize:vertical;outline:none;line-height:1.6;transition:.2s}
+.short-ta:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1);background:var(--white)}
+
+/* GAP PAIRS */
+.gap-list{display:flex;flex-direction:column;gap:10px}
+.gap-pair{border:1.5px solid rgba(10,22,40,.07);border-radius:11px;overflow:hidden}
+.gap-inner{display:grid;grid-template-columns:1fr 40px 1fr}
+.gap-opt{padding:14px 16px;cursor:pointer;transition:.15s;background:var(--cream);font-size:13px;color:var(--navy);line-height:1.5;display:flex;align-items:flex-start;gap:9px}
+.gap-opt:hover{background:var(--pale)}
+.gap-opt.sel{background:var(--pale)}
+.gap-radio{width:17px;height:17px;flex-shrink:0;margin-top:2px;border:2px solid rgba(10,22,40,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:.15s}
+.gap-opt.sel .gap-radio{border-color:var(--gold);background:var(--gold)}
+.gap-opt.sel .gap-radio::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+.gap-or{background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px}
+
+/* NAV */
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
+.btn{padding:12px 24px;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;border:none;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+.btn-back{background:transparent;color:var(--navy);border:1.5px solid rgba(10,22,40,.12)}
+.btn-back:hover{background:var(--light)}
+.btn-next{background:linear-gradient(135deg,var(--navy) 0%,#1a2f55 100%);color:#fff;box-shadow:var(--sh)}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(10,22,40,.2)}
+.btn-submit{background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--navy);box-shadow:var(--shg)}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,.3)}
+
+/* SUCCESS */
+#success{display:none;min-height:100vh;background:linear-gradient(140deg,#060e1c,#0d1f3c,#162b50);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px 20px}
+.suc-check{width:76px;height:76px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 24px;box-shadow:var(--shg);animation:pop .5s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.suc-title{font-family:'Playfair Display',serif;font-size:30px;color:#fff;margin-bottom:10px}
+.suc-sub{font-size:14px;color:rgba(255,255,255,.5);max-width:400px;line-height:1.7;margin-bottom:24px}
+.suc-meta{font-size:11px;color:rgba(255,255,255,.25)}
+
+@media(max-width:580px){
+  .hdr{padding:12px 14px}.sec-hero{padding:20px 16px}
+  .form-body{padding:20px 14px 50px}
+  .demo-grid{grid-template-columns:1fr}
+  .lik-header{grid-template-columns:1fr repeat(5,34px);gap:2px}
+  .lik-row{grid-template-columns:1fr repeat(5,34px);gap:2px}
+  .lik-btn{width:28px;height:28px;font-size:10px}
+  .gap-inner{grid-template-columns:1fr 30px 1fr}
+  .role-row{flex-direction:column;align-items:center}
+  .role-card{width:100%;max-width:300px}
+}
+</style>
+</head>
+<body>
+
+<!-- LANDING -->
+<div id="landing">
+  <div class="l-chip">Academic Research · Strictly Confidential</div>
+  <div class="l-badge">H</div>
+  <h1 class="l-title">HBL <span>Organizational Culture</span> Study</h1>
+  <p class="l-sub">A university research study on how culture is communicated across HBL's levels in Karachi. Takes 4–5 minutes. All responses are anonymous.</p>
+  <div class="role-row">
+    <div class="role-card" onclick="start('mgmt')">
+      <div class="rc-icon">👔</div>
+      <div class="rc-title">Management</div>
+      <div class="rc-desc">Branch Managers, Team Leads, Area Managers and above</div>
+    </div>
+    <div class="role-card" onclick="start('emp')">
+      <div class="rc-icon">🧑‍💼</div>
+      <div class="rc-title">Employee</div>
+      <div class="rc-desc">Tellers, CSOs, Officers, Relationship Managers and similar roles</div>
+    </div>
+  </div>
+  <p class="l-note"><strong>100% Anonymous</strong> — No names collected. For academic use only.<br>Muhammad Nihaal Khan (30184) · Ashir Adnan (31130) · OB Term Paper 2026</p>
+</div>
+
+<!-- FORM -->
+<div id="form-wrap">
+  <div class="hdr">
+    <div class="hdr-logo">H</div>
+    <div class="hdr-text">
+      <div class="hdr-title" id="hdr-title">HBL Culture Study</div>
+      <div class="hdr-sub" id="hdr-sub">Management Questionnaire</div>
+    </div>
+    <div class="hdr-prog">
+      <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+      <div class="prog-lbl" id="prog-lbl">Section 1 of 5</div>
+    </div>
+  </div>
+  <div class="sec-hero">
+    <div class="sec-icon" id="sec-icon">👤</div>
+    <div>
+      <div class="sec-title" id="sec-title">Your Profile</div>
+      <div class="sec-desc" id="sec-desc">A few quick details about your role. All anonymous.</div>
+    </div>
+  </div>
+  <div class="form-body" id="form-body"></div>
+</div>
+
+<!-- SUCCESS -->
+<div id="success">
+  <div class="suc-check">✓</div>
+  <h2 class="suc-title">Thank You!</h2>
+  <p class="suc-sub">Your response has been recorded and will contribute to a meaningful study on organizational culture at HBL.</p>
+  <p class="suc-meta">Muhammad Nihaal Khan (30184) · Ashir Adnan (31130) · OB Term Paper 2026</p>
+</div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const L = ['SD','D','N','A','SA'];
+const LF = ['Strongly Disagree','Disagree','Neutral','Agree','Strongly Agree'];
+
+const FORMS = {
+mgmt:{
+  label:'Management Questionnaire',
+  sections:[
+    {
+      icon:'👤', title:'Your Profile', desc:'Quick background about your role at HBL.',
+      type:'demo',
+      fields:[
+        {id:'pos', label:'Your Designation', req:true, opts:['Branch Manager','Area Manager','Regional Manager','Operations Manager','Department Head / HOD','Team Lead / Supervisor','Other']},
+        {id:'dept', label:'Department', req:true, opts:['Retail / Branch Banking','Corporate Banking','Human Resources','Operations','Compliance & Risk','Finance','IT & Digital','Marketing / Communications','Other']},
+        {id:'yrs', label:'Years at HBL', req:true, opts:['Less than 1 year','1–3 years','3–5 years','5–10 years','More than 10 years']},
+        {id:'team', label:'Team Size You Manage', req:true, opts:['1–5 people','6–15 people','16–30 people','More than 30 people']},
+      ]
+    },
+    {
+      icon:'🏛️', title:"HBL's Culture — Your View", desc:'Simple questions about how you understand and describe HBL\'s culture.',
+      type:'questions',
+      qs:[
+        {
+          id:'m1', type:'mcq', req:true,
+          text:"How would you best describe HBL's overall work culture today?",
+          opts:['Formal and hierarchical — clear authority levels','Collaborative — teamwork is encouraged','Performance-driven — targets and results come first','Values-driven — ethics and integrity guide decisions','A mix of all of the above']
+        },
+        {
+          id:'m2', type:'mcq', req:true,
+          text:'HBL has five core values: Integrity, Customer Centric, Value People, Progressive, and Excellence. How familiar are most of your team members with these?',
+          opts:['Very familiar — they can name and explain them','Somewhat familiar — they know them but not in detail','Aware they exist — but rarely discussed','Not familiar at all']
+        },
+        {
+          id:'m3', type:'multi', req:true,
+          text:'Which of the following channels do YOU personally use to communicate HBL\'s culture and values to your team?',
+          hint:'Select all that apply.',
+          opts:['Daily / weekly team meetings or morning huddles','One-on-one conversations','HBL\'s internal emails or circulars','Performance reviews and appraisals','Training sessions (e.g. ASPIRE program)','By modelling the values through my own behaviour','I don\'t explicitly communicate culture']
+        },
+        {
+          id:'m4', type:'mcq', req:true,
+          text:'How clearly does HBL\'s leadership (from Head Office / Habib Bank Plaza) communicate the bank\'s values and direction to your level?',
+          opts:['Very clearly — we always know what is expected','Fairly clearly — most of the time it is understood','Sometimes unclear — things get lost in translation','Rarely clear — communication from top is weak']
+        },
+      ]
+    },
+    {
+      icon:'📊', title:'Culture Communication — Rate Each Statement',
+      desc:'Based on your real experience at HBL. Scale: 1 = Strongly Disagree → 5 = Strongly Agree',
+      type:'likert',
+      qs:[
+        {id:'l1', text:"HBL's five core values are genuinely reflected in day-to-day workplace behaviour at my branch/department."},
+        {id:'l2', text:'When new employees join, HBL\'s culture and values are clearly explained to them during onboarding.'},
+        {id:'l3', text:'The culture at branch level matches what HBL\'s senior leadership intends it to be.',rev:true},
+        {id:'l4', text:'HBL\'s "Enriching Lives" purpose and "Enabling People" vision feel meaningful to staff — not just slogans.'},
+        {id:'l5', text:'After the 2017 compliance incident (NYDFS fine), HBL\'s internal culture around ethics and conduct has genuinely improved.'},
+        {id:'l6', text:'HBL\'s push to become a "technology company with a banking licence" has positively shifted the internal work culture.'},
+        {id:'l7', text:'Employees who follow HBL\'s values are visibly recognized and rewarded.'},
+        {id:'l8', text:'I find it difficult to ensure consistent culture across all staff in my team.',rev:true},
+      ]
+    },
+    {
+      icon:'⚖️', title:'Culture Gap — Pick One', desc:'For each pair, pick the statement that best describes your experience at HBL.',
+      type:'gap',
+      qs:[{
+        id:'g1', text:'',
+        pairs:[
+          {a:'HBL\'s stated values are genuinely practiced at all levels of the bank.',   b:'HBL\'s values look good on paper but daily reality is different.'},
+          {a:'Senior leadership\'s vision for culture is clearly felt at branch level.',   b:'There is a visible gap between what head office says and what branches experience.'},
+          {a:'Culture at HBL is consistent — regardless of which HOD or manager you work under.', b:'Culture at HBL varies a lot depending on your manager or department head.'},
+          {a:'HBL\'s compliance and ethics culture post-2017 has genuinely changed employee behaviour.', b:'Compliance changes after 2017 were mostly procedural — not a real culture shift.'},
+        ]
+      }]
+    },
+    {
+      icon:'✍️', title:'Your Thoughts', desc:'Short answers — be honest, there are no right or wrong answers.',
+      type:'questions',
+      qs:[
+        {id:'oe1', type:'short', req:true,  text:'In your own words, what is the single most defining feature of HBL\'s culture that makes it different from other Pakistani banks?'},
+        {id:'oe2', type:'short', req:false, text:'What is the biggest challenge you face in ensuring HBL\'s culture and values reach every employee in your team or branch?'},
+        {id:'oe3', type:'short', req:true,  text:'HBL has programs like ASPIRE training, Falak mentorship, and Waapsi (female returnship). Do these programs make employees feel more connected to HBL\'s culture? Why or why not?'},
+        {id:'oe4', type:'short', req:false, text:'What one change would make HBL\'s culture communication more effective from leadership down to front-line staff?'},
+      ]
+    }
+  ]
+},
+
+emp:{
+  label:'Employee Questionnaire',
+  sections:[
+    {
+      icon:'👤', title:'Your Profile', desc:'Quick background about your role at HBL.',
+      type:'demo',
+      fields:[
+        {id:'epos', label:'Your Designation', req:true, opts:['Teller / Cash Officer','Customer Service Officer (CSO)','Relationship Manager / Personal Banker','General Banking / Operations Officer','IT / Support Staff','Compliance / Risk Officer','Other']},
+        {id:'edept', label:'Department / Branch Type', req:true, opts:['Retail Branch Banking','Corporate Banking Branch','HBL Islamic Banking Branch','Operations / Back Office','IT & Digital','Compliance & Risk','HR / Admin','Other']},
+        {id:'eyrs', label:'Years at HBL', req:true, opts:['Less than 1 year','1–3 years','3–5 years','5–10 years','More than 10 years']},
+        {id:'eloc', label:'Karachi Area (approx.)', req:false, opts:['I.I. Chundrigar / SITE / Saddar','Clifton / Defence / Korangi','North Karachi / Gulshan / Nazimabad','Malir / Landhi / Shah Faisal','Other / Multiple branches']},
+      ]
+    },
+    {
+      icon:'🌐', title:"Your Experience of HBL's Culture", desc:"Simple questions about how you experience HBL's culture as an employee.",
+      type:'questions',
+      qs:[
+        {
+          id:'e1', type:'mcq', req:true,
+          text:'How would you describe the culture at your HBL branch or department based on your personal experience?',
+          opts:['Formal and strict — rules and hierarchy are strongly felt','Supportive and team-oriented — colleagues help each other','Target-focused — hitting numbers is the main priority','Ethical and values-based — integrity and respect are key','Unpredictable — it varies a lot depending on your manager']
+        },
+        {
+          id:'e2', type:'mcq', req:true,
+          text:'When you first joined HBL, how were you introduced to the bank\'s culture and values?',
+          opts:['Through a formal onboarding/orientation program at HBL','My manager explained HBL\'s values and expectations to me','I observed senior colleagues and picked it up over time','Through HBL\'s internal documents, emails or the careers portal','I was not formally introduced — I figured it out on my own']
+        },
+        {
+          id:'e3', type:'multi', req:true,
+          text:'Through which channels do you mainly learn about HBL\'s values and expected behaviour?',
+          hint:'Select your top 2.',
+          opts:['My direct manager or supervisor','Morning branch huddles or team meetings','HBL emails, circulars or the internal portal','Training programs (e.g. ASPIRE, compliance training)','Posters and displays inside the branch','Colleagues and peers informally','Annual performance reviews']
+        },
+        {
+          id:'e4', type:'mcq', req:true,
+          text:'How often does your manager talk to you about HBL\'s values or the kind of behaviour expected at work?',
+          opts:['Frequently — it comes up regularly','Sometimes — mainly during reviews or specific situations','Rarely — only if something goes wrong','Never — it is not discussed']
+        },
+      ]
+    },
+    {
+      icon:'📊', title:'Rate Your Experience at HBL',
+      desc:'Based on your real day-to-day experience. Scale: 1 = Strongly Disagree → 5 = Strongly Agree',
+      type:'likert',
+      qs:[
+        {id:'el1', text:"I have a clear understanding of HBL's five core values (Integrity, Customer Centric, Value People, Progressive, Excellence)."},
+        {id:'el2', text:'My manager consistently demonstrates HBL\'s values through their own behaviour.'},
+        {id:'el3', text:'The culture I experience at my branch matches what HBL officially promotes.',rev:true},
+        {id:'el4', text:'HBL\'s emphasis on compliance and ethics (since the 2017 New York incident) has created a more disciplined and honest work environment.'},
+        {id:'el5', text:'I feel personally aligned with HBL\'s culture and values.'},
+        {id:'el6', text:'HBL\'s digital push (HBL Mobile, Konnect) has made the work culture feel more modern and forward-thinking.'},
+        {id:'el7', text:'Cultural expectations at HBL are the same regardless of which branch or HOD you work under.',rev:true},
+        {id:'el8', text:'I feel that good performance and values-based behaviour are genuinely recognized and rewarded at HBL.'},
+      ]
+    },
+    {
+      icon:'⚖️', title:'Your Honest View — Pick One', desc:'For each pair, pick the statement that best matches your experience at HBL.',
+      type:'gap',
+      qs:[{
+        id:'eg1', text:'',
+        pairs:[
+          {a:'HBL\'s values are consistently practised by people at all levels.',   b:'HBL\'s values exist on paper but are not always practised in reality.'},
+          {a:'I feel respected and fairly treated in line with HBL\'s "Value People" principle.',  b:'There is a gap between HBL\'s stated "Value People" principle and how staff are actually treated.'},
+          {a:'Culture feels the same regardless of which branch or manager I work under.', b:'Culture varies a lot depending on your HOD — some create pressure, others are supportive.'},
+          {a:'HBL\'s "Bank with a Soul" identity (CSR, community, Enriching Lives) resonates with me personally.', b:'HBL\'s social and CSR messaging feels like marketing — it doesn\'t connect to my daily work.'},
+        ]
+      }]
+    },
+    {
+      icon:'✍️', title:'Your Thoughts', desc:'Short answers — be honest. Your experience matters for this research.',
+      type:'questions',
+      qs:[
+        {id:'eoe1', type:'short', req:true,  text:'In one or two sentences, how would you describe HBL\'s culture to a friend who has never worked there?'},
+        {id:'eoe2', type:'short', req:false, text:'Can you think of a specific situation at work where HBL\'s values (e.g. Integrity, Customer Centric) clearly influenced how a decision was made or how someone behaved?'},
+        {id:'eoe3', type:'short', req:true,  text:'Is there anything about HBL\'s culture that you feel is NOT clearly communicated to employees like yourself? What is it?'},
+        {id:'eoe4', type:'short', req:false, text:'What one change would improve how HBL communicates its culture to front-line staff?'},
+      ]
+    }
+  ]
+}
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let form=null, sec=0, ans={};
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function start(type){
+  form=FORMS[type]; sec=0; ans={};
+  document.getElementById('landing').style.display='none';
+  document.getElementById('form-wrap').style.display='block';
+  document.getElementById('hdr-sub').textContent=form.label;
+  render();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render(){
+  const s=form.sections[sec], total=form.sections.length;
+  document.getElementById('sec-icon').textContent=s.icon;
+  document.getElementById('sec-title').textContent=s.title;
+  document.getElementById('sec-desc').textContent=s.desc;
+  document.getElementById('prog').style.width=(sec/total*100)+'%';
+  document.getElementById('prog-lbl').textContent=`Section ${sec+1} of ${total}`;
+
+  const body=document.getElementById('form-body');
+  body.innerHTML='';
+  body.className='form-body anim';
+
+  if(s.type==='demo') body.appendChild(buildDemo(s));
+  else if(s.type==='likert') body.appendChild(buildLikertCard(s));
+  else if(s.type==='gap') body.appendChild(buildGapCard(s));
+  else s.qs.forEach(q=>{ const el=buildQ(q); if(el) body.appendChild(el); });
+
+  // nav
+  const nav=document.createElement('div'); nav.className='form-nav';
+  const back=document.createElement('button'); back.className='btn btn-back';
+  if(sec>0){ back.textContent='← Back'; back.onclick=()=>{sec--;render();scrollTop();}; }
+  else{ back.textContent='← Change Role'; back.onclick=()=>{ document.getElementById('form-wrap').style.display='none'; document.getElementById('landing').style.display='flex'; }; }
+
+  const isLast=sec===total-1;
+  const next=document.createElement('button');
+  next.className='btn '+(isLast?'btn-submit':'btn-next');
+  next.textContent=isLast?'Submit ✓':'Continue →';
+  next.onclick=()=>{ if(validate()){ if(isLast) done(); else{ sec++; render(); scrollTop(); } } };
+
+  nav.appendChild(back); nav.appendChild(next); body.appendChild(nav);
+  scrollTop();
+}
+
+function scrollTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+// ─── DEMO ────────────────────────────────────────────────────────────────────
+function buildDemo(s){
+  const card=document.createElement('div'); card.className='demo-card';
+  const grid=document.createElement('div'); grid.className='demo-grid';
+  s.fields.forEach(f=>{
+    const df=document.createElement('div'); df.className='df';
+    df.innerHTML=`<label>${f.label}${f.req?'<span>*</span>':''}</label>`;
+    const sel=document.createElement('select'); sel.id='d-'+f.id; sel.className='';
+    sel.innerHTML=`<option value="">— Select —</option>`+f.opts.map(o=>`<option value="${o}"${ans[f.id]===o?' selected':''}>${o}</option>`).join('');
+    sel.onchange=()=>{ ans[f.id]=sel.value; sel.classList.remove('err'); };
+    df.appendChild(sel); grid.appendChild(df);
+  });
+  card.appendChild(grid); return card;
+}
+
+// ─── Q CARD ──────────────────────────────────────────────────────────────────
+function buildQ(q){
+  if(q.type==='likert') return null; // handled separately
+  const card=document.createElement('div'); card.className='q-card'+(ans[q.id]?' done':''); card.id='qc-'+q.id;
+  card.innerHTML=`<div class="q-tag">Question</div><div class="q-text">${q.text}${q.req?'<span class="req">*</span>':''}</div>${q.hint?`<div class="q-hint">${q.hint}</div>`:''}`;
+
+  if(q.type==='mcq') card.appendChild(buildMCQ(q,false));
+  if(q.type==='multi') card.appendChild(buildMCQ(q,true));
+  if(q.type==='short') card.appendChild(buildShort(q));
+
+  card.appendChild(buildComment(q.id));
+  const err=document.createElement('div'); err.className='err-msg'; err.textContent='Please answer this question.'; card.appendChild(err);
+  return card;
+}
+
+// ─── MCQ ─────────────────────────────────────────────────────────────────────
+function buildMCQ(q,multi){
+  const wrap=document.createElement('div'); wrap.className='mcq-list';
+  const sel=multi?(ans[q.id]||[]):(ans[q.id]?[ans[q.id]]:[]);
+  q.opts.forEach(opt=>{
+    const item=document.createElement('div'); item.className='mcq-opt'+(sel.includes(opt)?' sel':'');
+    const icon=document.createElement('div'); icon.className=multi?'mcq-box':'mcq-dot'; item.appendChild(icon);
+    const lbl=document.createElement('div'); lbl.className='mcq-lbl'; lbl.textContent=opt; item.appendChild(lbl);
+    item.onclick=()=>{
+      if(multi){
+        let arr=ans[q.id]||[];
+        arr=arr.includes(opt)?arr.filter(x=>x!==opt):[...arr,opt];
+        ans[q.id]=arr;
+        wrap.querySelectorAll('.mcq-opt').forEach((el,i)=>el.classList.toggle('sel',arr.includes(q.opts[i])));
+      } else {
+        ans[q.id]=opt;
+        wrap.querySelectorAll('.mcq-opt').forEach(el=>el.classList.remove('sel'));
+        item.classList.add('sel');
+      }
+      const card=document.getElementById('qc-'+q.id);
+      if(card){card.classList.add('done');card.classList.remove('err');}
+    };
+    wrap.appendChild(item);
+  });
+  return wrap;
+}
+
+// ─── SHORT ───────────────────────────────────────────────────────────────────
+function buildShort(q){
+  const wrap=document.createElement('div');
+  const ta=document.createElement('textarea'); ta.className='short-ta'; ta.placeholder='Write your response here...'; ta.value=ans[q.id]||'';
+  ta.oninput=()=>{ ans[q.id]=ta.value; const card=document.getElementById('qc-'+q.id); if(card&&ta.value.trim()){card.classList.add('done');card.classList.remove('err');} };
+  wrap.appendChild(ta); return wrap;
+}
+
+// ─── COMMENT ─────────────────────────────────────────────────────────────────
+function buildComment(qid){
+  const ck=qid+'__c';
+  const wrap=document.createElement('div'); wrap.style.marginTop='2px';
+  const btn=document.createElement('button'); btn.className='cmt-toggle'+(ans[ck]?' open':''); btn.type='button';
+  btn.innerHTML=`<span>💬</span><span>Add a comment (optional)</span><span class="arr">▼</span>`;
+  const box=document.createElement('div'); box.className='cmt-box'+(ans[ck]?' open':'');
+  const ta=document.createElement('textarea'); ta.className='cmt-ta'; ta.placeholder='Anything you want to add or explain...'; ta.value=ans[ck]||'';
+  const cnt=document.createElement('div'); cnt.className='cmt-count'; cnt.textContent=(ans[ck]||'').length+' / 200';
+  ta.oninput=()=>{ if(ta.value.length>200)ta.value=ta.value.slice(0,200); ans[ck]=ta.value; cnt.textContent=ta.value.length+' / 200'; };
+  btn.onclick=()=>{ const o=box.classList.contains('open'); box.classList.toggle('open',!o); btn.classList.toggle('open',!o); if(!o)setTimeout(()=>ta.focus(),50); };
+  box.appendChild(ta); box.appendChild(cnt); wrap.appendChild(btn); wrap.appendChild(box); return wrap;
+}
+
+// ─── LIKERT ──────────────────────────────────────────────────────────────────
+function buildLikertCard(s){
+  const card=document.createElement('div'); card.className='q-card'; card.id='lik-card';
+  const hdr=document.createElement('div'); hdr.className='lik-header';
+  hdr.innerHTML=`<span>Statement</span>`+L.map((l,i)=>`<span title="${LF[i]}">${l}</span>`).join('');
+  card.appendChild(hdr);
+
+  s.qs.forEach(q=>{
+    const row=document.createElement('div'); row.className='lik-row'+(ans[q.id]?' done':''); row.id='lr-'+q.id;
+    const stmt=document.createElement('div'); stmt.className='lik-stmt'; stmt.textContent=q.text+(q.rev?' ★':''); row.appendChild(stmt);
+    [1,2,3,4,5].forEach(v=>{
+      const btn=document.createElement('button'); btn.className='lik-btn'+(ans[q.id]==v?' sel':''); btn.textContent=v; btn.title=LF[v-1]; btn.type='button';
+      btn.onclick=()=>{ ans[q.id]=v; row.classList.add('done'); row.querySelectorAll('.lik-btn').forEach(b=>b.classList.remove('sel')); btn.classList.add('sel'); };
+      row.appendChild(btn);
+    });
+    card.appendChild(row);
+  });
+
+  // shared comment
+  const cw=document.createElement('div'); cw.style.marginTop='12px';
+  cw.appendChild(buildComment(s.title.replace(/\s+/g,'_')));
+  card.appendChild(cw);
+
+  const err=document.createElement('div'); err.className='err-msg'; err.id='lik-err'; err.textContent='Please rate all statements before continuing.'; card.appendChild(err);
+  return card;
+}
+
+// ─── GAP ─────────────────────────────────────────────────────────────────────
+function buildGapCard(s){
+  const q=s.qs[0];
+  if(!ans[q.id]) ans[q.id]={};
+  const card=document.createElement('div'); card.className='q-card';
+  card.innerHTML=`<div class="q-tag">Culture Gap</div><div class="q-text">For each pair, select the statement that best matches your experience at HBL.</div>`;
+  const list=document.createElement('div'); list.className='gap-list';
+
+  q.pairs.forEach((pair,pi)=>{
+    const pairEl=document.createElement('div'); pairEl.className='gap-pair';
+    const inner=document.createElement('div'); inner.className='gap-inner';
+    ['a','b'].forEach((side,si)=>{
+      const opt=document.createElement('div'); opt.className='gap-opt'+(ans[q.id][pi]===side?' sel':'');
+      opt.innerHTML=`<div class="gap-radio"></div><span>${pair[side]}</span>`;
+      opt.onclick=()=>{ ans[q.id][pi]=side; pairEl.querySelectorAll('.gap-opt').forEach(e=>e.classList.remove('sel')); opt.classList.add('sel'); };
+      if(si===0){ inner.appendChild(opt); }
+      else {
+        const or=document.createElement('div'); or.className='gap-or'; or.textContent='OR';
+        inner.appendChild(or); inner.appendChild(opt);
+      }
+    });
+    pairEl.appendChild(inner);
+
+    // per-pair comment
+    const cw=document.createElement('div'); cw.style.cssText='padding:0 12px 10px';
+    cw.appendChild(buildComment(q.id+'_'+pi));
+    pairEl.appendChild(cw);
+
+    list.appendChild(pairEl);
+  });
+
+  card.appendChild(list); return card;
+}
+
+// ─── VALIDATE ────────────────────────────────────────────────────────────────
+function validate(){
+  const s=form.sections[sec]; let ok=true;
+  if(s.type==='demo'){
+    s.fields.filter(f=>f.req).forEach(f=>{
+      const el=document.getElementById('d-'+f.id);
+      if(el&&!el.value){ el.classList.add('err'); ok=false; }
+      else if(el) el.classList.remove('err');
+    });
+  } else if(s.type==='likert'){
+    const miss=s.qs.filter(q=>!ans[q.id]);
+    if(miss.length){ document.getElementById('lik-err').style.display='block'; miss.forEach(q=>{ const r=document.getElementById('lr-'+q.id); if(r) r.style.background='#fff5f5'; }); ok=false; }
+    else { const e=document.getElementById('lik-err'); if(e) e.style.display='none'; }
+  } else if(s.type==='questions'){
+    s.qs.filter(q=>q.req).forEach(q=>{
+      const card=document.getElementById('qc-'+q.id); if(!card) return;
+      const filled=(q.type==='short')?(ans[q.id]&&ans[q.id].trim()):(ans[q.id]&&(Array.isArray(ans[q.id])?ans[q.id].length>0:true));
+      card.classList.toggle('err',!filled);
+      if(!filled) ok=false;
+    });
+  }
+  if(!ok){ const first=document.querySelector('.err, select.err'); if(first) first.scrollIntoView({behavior:'smooth',block:'center'}); }
+  return ok;
+}
+
+// ─── DONE ─────────────────────────────────────────────────────────────────────
+function done(){
+  document.getElementById('form-wrap').style.display='none';
+  const s=document.getElementById('success'); s.style.display='flex';
+  console.log('HBL Study Response:',JSON.stringify(ans,null,2));
+}
+</script>
+</body>
+</html>
