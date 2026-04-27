@@ -641,52 +641,109 @@ function done(){
   document.getElementById('form-wrap').style.display='none';
   document.getElementById('success').style.display='flex';
 
-  // Build a clean copy to send
   var payload = {};
   payload.role = form.label;
   payload.submitted = new Date().toLocaleString();
 
-  // Helper: resolve gap pair {0:'a',1:'b'...} → readable text using form data
-  function resolveGap(gapObj, pairs){
-    if(!gapObj || typeof gapObj!=='object') return String(gapObj||'');
-    return pairs.map(function(pair, i){
-      var choice = gapObj[i];
-      if(choice==='a') return 'A: '+pair.a;
-      if(choice==='b') return 'B: '+pair.b;
-      return 'Pair '+(i+1)+': not answered';
-    }).join(' || ');
-  }
+  // Map question IDs to friendly sheet column names
+  var colNames = {
+    // Profile
+    'pos':'Position', 'epos':'Position',
+    'dept':'Department', 'edept':'Department',
+    'yrs':'Years at HBL', 'eyrs':'Years at HBL',
+    'team':'Team Size',
+    'eloc':'Location / Area',
+    // MCQ
+    'm1':'Q1 - Culture Description', 'e1':'Q1 - Culture Description',
+    'm2':'Q2 - Values Familiarity / Onboarding', 'e2':'Q2 - Values Familiarity / Onboarding',
+    'm3':'Q3 - Communication Channels', 'e3':'Q3 - Communication Channels',
+    'm4':'Q4 - Leadership/Manager Communication Frequency', 'e4':'Q4 - Leadership/Manager Communication Frequency',
+    // MCQ Comments
+    'm1__c':'Q1 Comment', 'e1__c':'Q1 Comment',
+    'm2__c':'Q2 Comment', 'e2__c':'Q2 Comment',
+    'm3__c':'Q3 Comment', 'e3__c':'Q3 Comment',
+    'm4__c':'Q4 Comment', 'e4__c':'Q4 Comment',
+    // Likert
+    'l1':'Likert 1', 'el1':'Likert 1',
+    'l2':'Likert 2', 'el2':'Likert 2',
+    'l3':'Likert 3 ★', 'el3':'Likert 3 ★',
+    'l4':'Likert 4', 'el4':'Likert 4',
+    'l5':'Likert 5', 'el5':'Likert 5',
+    'l6':'Likert 6', 'el6':'Likert 6',
+    'l7':'Likert 7', 'el7':'Likert 7',
+    'l8':'Likert 8 ★', 'el8':'Likert 8 ★',
+    // Likert shared comment — key is built from section title
+    'Rate_Your_Experience_at_HBL__c':'Likert Comment',
+    'Culture_Communication_—_Rate_Each_Statement__c':'Likert Comment',
+    // Open ended
+    'oe1':'Open 1 (Required)', 'eoe1':'Open 1 (Required)',
+    'oe2':'Open 2', 'eoe2':'Open 2',
+    'oe3':'Open 3 (Required)', 'eoe3':'Open 3 (Required)',
+    'oe4':'Open 4', 'eoe4':'Open 4'
+  };
 
-  // Build gap lookup maps from form data
+  // Gap pair text lookup
   var gapMaps = {};
   form.sections.forEach(function(s){
     if(s.type==='gap') s.qs.forEach(function(q){ gapMaps[q.id]=q.pairs; });
   });
 
-  // Process every answer key
+  // Gap column names
+  var gapCols = {
+    'g1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR'],
+    'eg1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR']
+  };
+  var gapCommentCols = {
+    'g1':['Gap 1 Comment','Gap 2 Comment','Gap 3 Comment','Gap 4 Comment'],
+    'eg1':['Gap 1 Comment','Gap 2 Comment','Gap 3 Comment','Gap 4 Comment']
+  };
+
   Object.keys(ans).forEach(function(k){
     var v = ans[k];
-    if(v===null||v===undefined) return;
+    if(v === null || v === undefined || v === '') return;
 
-    // Gap pairs — resolve a/b to actual text
-    if(gapMaps[k]){
-      payload[k] = resolveGap(v, gapMaps[k]);
+    // 1. Gap pair object — resolve each pair to full text
+    if(gapMaps[k] && typeof v === 'object'){
+      var pairs = gapMaps[k];
+      var cols = gapCols[k] || [];
+      Object.keys(v).forEach(function(i){
+        var choice = v[i];
+        var text = choice === 'a' ? 'A: '+pairs[i].a : choice === 'b' ? 'B: '+pairs[i].b : '';
+        var colName = cols[parseInt(i)] || ('Gap '+(parseInt(i)+1));
+        if(text) payload[colName] = text;
+      });
       return;
     }
 
-    // Arrays (multi-select) → join
-    if(Array.isArray(v)){ payload[k]=v.join(' | '); return; }
+    // 2. Gap pair comments — keys like g1_0__c, eg1_2__c
+    var gapCmtMatch = k.match(/^(g1|eg1)_(\d+)__c$/);
+    if(gapCmtMatch){
+      var baseId = gapCmtMatch[1];
+      var pairIdx = parseInt(gapCmtMatch[2]);
+      var cmtCols = gapCommentCols[baseId] || [];
+      var cmtCol = cmtCols[pairIdx] || ('Gap '+(pairIdx+1)+' Comment');
+      if(String(v).trim()) payload[cmtCol] = String(v).trim();
+      return;
+    }
 
-    // Comment keys (__c suffix) — include them with friendly label
+    // 3. Named comment keys (MCQ comments, likert comment)
+    if(colNames[k]){
+      var val = Array.isArray(v) ? v.join(' | ') : String(v);
+      if(val.trim()) payload[colNames[k]] = val.trim();
+      return;
+    }
+
+    // 4. Any remaining __c keys not in map — still save them
     if(k.endsWith('__c')){
-      if(v && String(v).trim()) payload['Comment_'+k.replace('__c','')] = String(v).trim();
+      if(String(v).trim()) payload['Comment_'+k.replace('__c','')] = String(v).trim();
       return;
     }
 
-    // Plain objects (shouldn't happen now but safety net)
-    if(typeof v==='object'){ payload[k]=JSON.stringify(v); return; }
+    // 5. Arrays (multi-select)
+    if(Array.isArray(v)){ payload[colNames[k]||k] = v.join(' | '); return; }
 
-    payload[k] = v;
+    // 6. Plain values
+    if(typeof v !== 'object') payload[colNames[k]||k] = v;
   });
 
   // Method 1: no-cors fetch
@@ -709,7 +766,7 @@ function done(){
     document.body.appendChild(iframe); document.body.appendChild(f); f.submit();
   }catch(e){}
 
-  console.log('HBL Submitted:',JSON.stringify(payload,null,2));
+  console.log('HBL Payload:', JSON.stringify(payload, null, 2));
 }
 </script>
 </body>
