@@ -634,45 +634,82 @@ function validate(){
 }
 
 // ─── DONE ─────────────────────────────────────────────────────────────────────
-const SHEET_URL='https://script.google.com/macros/s/AKfycbySIPgvAQkww-Ex4sD7FuUn7fN-avl6d_wyQglWr-dKnyzoabXVScR-AzjfWztH3k20_A/exec';
+const SHEET_URL='https://script.google.com/macros/s/AKfycbzlMISCjT21p5ipQGN2caVpdFFPmaBEitaUIudLAzqjjIoxlJwRkEgByjhrkbDX4wRbNA/exec';
 
 
 function done(){
-  // Show success immediately — don't make user wait
   document.getElementById('form-wrap').style.display='none';
   document.getElementById('success').style.display='flex';
 
-  // Build flat payload
-  ans.role = form.label;
-  ans.submitted = new Date().toLocaleString();
+  // Build a clean copy to send
+  var payload = {};
+  payload.role = form.label;
+  payload.submitted = new Date().toLocaleString();
 
-  // Flatten multi-select arrays to strings
-  Object.keys(ans).forEach(k=>{
-    if(Array.isArray(ans[k])) ans[k]=ans[k].join(' | ');
-    if(typeof ans[k]==='object' && ans[k]!==null) ans[k]=JSON.stringify(ans[k]);
+  // Helper: resolve gap pair {0:'a',1:'b'...} → readable text using form data
+  function resolveGap(gapObj, pairs){
+    if(!gapObj || typeof gapObj!=='object') return String(gapObj||'');
+    return pairs.map(function(pair, i){
+      var choice = gapObj[i];
+      if(choice==='a') return 'A: '+pair.a;
+      if(choice==='b') return 'B: '+pair.b;
+      return 'Pair '+(i+1)+': not answered';
+    }).join(' || ');
+  }
+
+  // Build gap lookup maps from form data
+  var gapMaps = {};
+  form.sections.forEach(function(s){
+    if(s.type==='gap') s.qs.forEach(function(q){ gapMaps[q.id]=q.pairs; });
   });
 
-  // Method 1: no-cors fetch (fires and forgets — works with Apps Script)
+  // Process every answer key
+  Object.keys(ans).forEach(function(k){
+    var v = ans[k];
+    if(v===null||v===undefined) return;
+
+    // Gap pairs — resolve a/b to actual text
+    if(gapMaps[k]){
+      payload[k] = resolveGap(v, gapMaps[k]);
+      return;
+    }
+
+    // Arrays (multi-select) → join
+    if(Array.isArray(v)){ payload[k]=v.join(' | '); return; }
+
+    // Comment keys (__c suffix) — include them with friendly label
+    if(k.endsWith('__c')){
+      if(v && String(v).trim()) payload['Comment_'+k.replace('__c','')] = String(v).trim();
+      return;
+    }
+
+    // Plain objects (shouldn't happen now but safety net)
+    if(typeof v==='object'){ payload[k]=JSON.stringify(v); return; }
+
+    payload[k] = v;
+  });
+
+  // Method 1: no-cors fetch
   fetch(SHEET_URL,{
     method:'POST',
     mode:'no-cors',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(ans)
-  }).catch(()=>{});
+    body:JSON.stringify(payload)
+  }).catch(function(){});
 
-  // Method 2: hidden form POST fallback (backup in case Method 1 blocked)
-  try {
+  // Method 2: hidden form POST fallback
+  try{
     var f=document.createElement('form');
-    f.method='POST'; f.action=SHEET_URL; f.target='hidden_iframe'; f.style.display='none';
+    f.method='POST'; f.action=SHEET_URL; f.target='hbl_iframe'; f.style.display='none';
     var inp=document.createElement('input');
-    inp.type='hidden'; inp.name='payload'; inp.value=JSON.stringify(ans);
+    inp.type='hidden'; inp.name='payload'; inp.value=JSON.stringify(payload);
     f.appendChild(inp);
     var iframe=document.createElement('iframe');
-    iframe.name='hidden_iframe'; iframe.style.display='none';
+    iframe.name='hbl_iframe'; iframe.style.display='none';
     document.body.appendChild(iframe); document.body.appendChild(f); f.submit();
-  } catch(e){}
+  }catch(e){}
 
-  console.log('Submitted:',JSON.stringify(ans,null,2));
+  console.log('HBL Submitted:',JSON.stringify(payload,null,2));
 }
 </script>
 </body>
