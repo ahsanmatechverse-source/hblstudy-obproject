@@ -634,8 +634,7 @@ function validate(){
 }
 
 // ─── DONE ─────────────────────────────────────────────────────────────────────
-const SHEET_URL='https://script.google.com/macros/library/d/1f6IXO6tNsfBfXIoxMcPHjfG97stSxIBCD4jXo_sHvgxDt78ByO6gBAl0/3';
-
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwC1c_x9rmv4RSWZesQcMcNBL8ZdasD4koNpoflPQmpzkWbz6McGwwXug2FWH3gcHgxyA/exec';
 
 function done(){
   document.getElementById('form-wrap').style.display='none';
@@ -645,129 +644,101 @@ function done(){
   payload.role = form.label;
   payload.submitted = new Date().toLocaleString();
 
-  // Map question IDs to friendly sheet column names
   var colNames = {
-    // Profile
-    'pos':'Position', 'epos':'Position',
-    'dept':'Department', 'edept':'Department',
-    'yrs':'Years at HBL', 'eyrs':'Years at HBL',
-    'team':'Team Size',
-    'eloc':'Location / Area',
-    // MCQ
-    'm1':'Q1 - Culture Description', 'e1':'Q1 - Culture Description',
-    'm2':'Q2 - Values Familiarity / Onboarding', 'e2':'Q2 - Values Familiarity / Onboarding',
-    'm3':'Q3 - Communication Channels', 'e3':'Q3 - Communication Channels',
-    'm4':'Q4 - Leadership/Manager Communication Frequency', 'e4':'Q4 - Leadership/Manager Communication Frequency',
-    // MCQ Comments
-    'm1__c':'Q1 Comment', 'e1__c':'Q1 Comment',
-    'm2__c':'Q2 Comment', 'e2__c':'Q2 Comment',
-    'm3__c':'Q3 Comment', 'e3__c':'Q3 Comment',
-    'm4__c':'Q4 Comment', 'e4__c':'Q4 Comment',
-    // Likert
-    'l1':'Likert 1', 'el1':'Likert 1',
-    'l2':'Likert 2', 'el2':'Likert 2',
-    'l3':'Likert 3 ★', 'el3':'Likert 3 ★',
-    'l4':'Likert 4', 'el4':'Likert 4',
-    'l5':'Likert 5', 'el5':'Likert 5',
-    'l6':'Likert 6', 'el6':'Likert 6',
-    'l7':'Likert 7', 'el7':'Likert 7',
-    'l8':'Likert 8 ★', 'el8':'Likert 8 ★',
-    // Likert shared comment — key is built from section title
-    'Rate_Your_Experience_at_HBL__c':'Likert Comment',
-    'Culture_Communication_—_Rate_Each_Statement__c':'Likert Comment',
-    // Open ended
-    'oe1':'Open 1 (Required)', 'eoe1':'Open 1 (Required)',
-    'oe2':'Open 2', 'eoe2':'Open 2',
-    'oe3':'Open 3 (Required)', 'eoe3':'Open 3 (Required)',
-    'oe4':'Open 4', 'eoe4':'Open 4'
+    'pos':'Position','epos':'Position',
+    'dept':'Department','edept':'Department',
+    'yrs':'Years at HBL','eyrs':'Years at HBL',
+    'team':'Team Size','eloc':'Location / Area',
+    'm1':'Q1 - Culture Description','e1':'Q1 - Culture Description',
+    'm2':'Q2 - Values Familiarity','e2':'Q2 - Values Familiarity',
+    'm3':'Q3 - Communication Channels','e3':'Q3 - Communication Channels',
+    'm4':'Q4 - Leadership Communication','e4':'Q4 - Leadership Communication',
+    'm1__c':'Q1 Comment','e1__c':'Q1 Comment',
+    'm2__c':'Q2 Comment','e2__c':'Q2 Comment',
+    'm3__c':'Q3 Comment','e3__c':'Q3 Comment',
+    'm4__c':'Q4 Comment','e4__c':'Q4 Comment',
+    'l1':'Likert 1','el1':'Likert 1',
+    'l2':'Likert 2','el2':'Likert 2',
+    'l3':'Likert 3 Rev','el3':'Likert 3 Rev',
+    'l4':'Likert 4','el4':'Likert 4',
+    'l5':'Likert 5','el5':'Likert 5',
+    'l6':'Likert 6','el6':'Likert 6',
+    'l7':'Likert 7','el7':'Likert 7',
+    'l8':'Likert 8 Rev','el8':'Likert 8 Rev',
+    'oe1':'Open 1','eoe1':'Open 1',
+    'oe2':'Open 2','eoe2':'Open 2',
+    'oe3':'Open 3','eoe3':'Open 3',
+    'oe4':'Open 4','eoe4':'Open 4'
   };
 
-  // Gap pair text lookup
-  var gapMaps = {};
+  var gapMaps={};
   form.sections.forEach(function(s){
     if(s.type==='gap') s.qs.forEach(function(q){ gapMaps[q.id]=q.pairs; });
   });
-
-  // Gap column names
-  var gapCols = {
-    'g1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR'],
-    'eg1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR']
+  var gapCols={
+    'g1':['Gap 1','Gap 2','Gap 3','Gap 4'],
+    'eg1':['Gap 1','Gap 2','Gap 3','Gap 4']
   };
-  var gapCommentCols = {
+  var gapCmtCols={
     'g1':['Gap 1 Comment','Gap 2 Comment','Gap 3 Comment','Gap 4 Comment'],
     'eg1':['Gap 1 Comment','Gap 2 Comment','Gap 3 Comment','Gap 4 Comment']
   };
 
   Object.keys(ans).forEach(function(k){
-    var v = ans[k];
-    if(v === null || v === undefined || v === '') return;
+    var v=ans[k];
+    if(v===null||v===undefined||v==='') return;
 
-    // 1. Gap pair object — resolve each pair to full text
-    if(gapMaps[k] && typeof v === 'object'){
-      var pairs = gapMaps[k];
-      var cols = gapCols[k] || [];
+    if(gapMaps[k] && typeof v==='object' && !Array.isArray(v)){
+      var pairs=gapMaps[k], cols=gapCols[k]||[];
       Object.keys(v).forEach(function(i){
-        var choice = v[i];
-        var text = choice === 'a' ? 'A: '+pairs[i].a : choice === 'b' ? 'B: '+pairs[i].b : '';
-        var colName = cols[parseInt(i)] || ('Gap '+(parseInt(i)+1));
-        if(text) payload[colName] = text;
+        var c=v[i], pi=parseInt(i);
+        var txt=c==='a'?'A: '+pairs[pi].a:c==='b'?'B: '+pairs[pi].b:'';
+        if(txt) payload[cols[pi]||('Gap '+(pi+1))]=txt;
       });
       return;
     }
 
-    // 2. Gap pair comments — keys like g1_0__c, eg1_2__c
-    var gapCmtMatch = k.match(/^(g1|eg1)_(\d+)__c$/);
-    if(gapCmtMatch){
-      var baseId = gapCmtMatch[1];
-      var pairIdx = parseInt(gapCmtMatch[2]);
-      var cmtCols = gapCommentCols[baseId] || [];
-      var cmtCol = cmtCols[pairIdx] || ('Gap '+(pairIdx+1)+' Comment');
-      if(String(v).trim()) payload[cmtCol] = String(v).trim();
+    var gcm=k.match(/^(g1|eg1)_(\d+)__c$/);
+    if(gcm){
+      var ci=parseInt(gcm[2]), cc=(gapCmtCols[gcm[1]]||[])[ci]||('Gap '+(ci+1)+' Comment');
+      if(String(v).trim()) payload[cc]=String(v).trim();
       return;
     }
 
-    // 3. Named comment keys (MCQ comments, likert comment)
-    if(colNames[k]){
-      var val = Array.isArray(v) ? v.join(' | ') : String(v);
-      if(val.trim()) payload[colNames[k]] = val.trim();
-      return;
-    }
-
-    // 4. Any remaining __c keys not in map — still save them
+    // Likert section comment key contains section title with underscores
     if(k.endsWith('__c')){
-      if(String(v).trim()) payload['Comment_'+k.replace('__c','')] = String(v).trim();
+      var friendly=colNames[k];
+      if(friendly){ if(String(v).trim()) payload[friendly]=String(v).trim(); }
+      else if(k.indexOf('Likert')>-1||k.indexOf('Rate')>-1||k.indexOf('Culture_Communication')>-1){
+        if(String(v).trim()) payload['Likert Comment']=String(v).trim();
+      } else {
+        if(String(v).trim()) payload['Cmt_'+k.replace('__c','').replace(/[^a-zA-Z0-9]/g,'_')]=String(v).trim();
+      }
       return;
     }
 
-    // 5. Arrays (multi-select)
-    if(Array.isArray(v)){ payload[colNames[k]||k] = v.join(' | '); return; }
-
-    // 6. Plain values
-    if(typeof v !== 'object') payload[colNames[k]||k] = v;
+    if(Array.isArray(v)){ payload[colNames[k]||k]=v.join(' | '); return; }
+    if(typeof v!=='object') payload[colNames[k]||k]=v;
   });
 
-  // Method 1: no-cors fetch
-  fetch(SHEET_URL,{
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
-  }).catch(function(){});
+  // Use XMLHttpRequest with no-cors — most reliable on mobile
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', SHEET_URL, true);
+    xhr.setRequestHeader('Content-Type', 'text/plain');
+    xhr.send(JSON.stringify(payload));
+  } catch(e1) {}
 
-  // Method 2: hidden form POST fallback
-  try{
-    var f=document.createElement('form');
-    f.method='POST'; f.action=SHEET_URL; f.target='hbl_iframe'; f.style.display='none';
-    var inp=document.createElement('input');
-    inp.type='hidden'; inp.name='payload'; inp.value=JSON.stringify(payload);
-    f.appendChild(inp);
-    var iframe=document.createElement('iframe');
-    iframe.name='hbl_iframe'; iframe.style.display='none';
-    document.body.appendChild(iframe); document.body.appendChild(f); f.submit();
-  }catch(e){}
+  // Backup: image beacon (works even when XHR blocked)
+  try {
+    var encoded = encodeURIComponent(JSON.stringify(payload));
+    var img = new Image();
+    img.src = SHEET_URL + '?data=' + encoded;
+  } catch(e2) {}
 
   console.log('HBL Payload:', JSON.stringify(payload, null, 2));
 }
+
 </script>
 </body>
 </html>
