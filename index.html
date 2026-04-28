@@ -650,24 +650,24 @@ function done(){
     'yrs':'Years at HBL','eyrs':'Years at HBL',
     'team':'Team Size','eloc':'Location / Area',
     'm1':'Q1 - Culture Description','e1':'Q1 - Culture Description',
-    'm2':'Q2 - Values Familiarity','e2':'Q2 - Values Familiarity',
+    'm2':'Q2 - Values Familiarity / Onboarding','e2':'Q2 - Values Familiarity / Onboarding',
     'm3':'Q3 - Communication Channels','e3':'Q3 - Communication Channels',
-    'm4':'Q4 - Leadership Communication','e4':'Q4 - Leadership Communication',
+    'm4':'Q4 - Leadership/Manager Communication Frequency','e4':'Q4 - Leadership/Manager Communication Frequency',
     'm1__c':'Q1 Comment','e1__c':'Q1 Comment',
     'm2__c':'Q2 Comment','e2__c':'Q2 Comment',
     'm3__c':'Q3 Comment','e3__c':'Q3 Comment',
     'm4__c':'Q4 Comment','e4__c':'Q4 Comment',
     'l1':'Likert 1','el1':'Likert 1',
     'l2':'Likert 2','el2':'Likert 2',
-    'l3':'Likert 3 Rev','el3':'Likert 3 Rev',
+    'l3':'Likert 3 ★','el3':'Likert 3 ★',
     'l4':'Likert 4','el4':'Likert 4',
     'l5':'Likert 5','el5':'Likert 5',
     'l6':'Likert 6','el6':'Likert 6',
     'l7':'Likert 7','el7':'Likert 7',
-    'l8':'Likert 8 Rev','el8':'Likert 8 Rev',
-    'oe1':'Open 1','eoe1':'Open 1',
+    'l8':'Likert 8 ★','el8':'Likert 8 ★',
+    'oe1':'Open 1 (Required)','eoe1':'Open 1 (Required)',
     'oe2':'Open 2','eoe2':'Open 2',
-    'oe3':'Open 3','eoe3':'Open 3',
+    'oe3':'Open 3 (Required)','eoe3':'Open 3 (Required)',
     'oe4':'Open 4','eoe4':'Open 4'
   };
 
@@ -676,8 +676,8 @@ function done(){
     if(s.type==='gap') s.qs.forEach(function(q){ gapMaps[q.id]=q.pairs; });
   });
   var gapCols={
-    'g1':['Gap 1','Gap 2','Gap 3','Gap 4'],
-    'eg1':['Gap 1','Gap 2','Gap 3','Gap 4']
+    'g1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR'],
+    'eg1':['Gap 1 - Values Practised','Gap 2 - People / Leadership','Gap 3 - Culture Consistency','Gap 4 - Ethics / CSR']
   };
   var gapCmtCols={
     'g1':['Gap 1 Comment','Gap 2 Comment','Gap 3 Comment','Gap 4 Comment'],
@@ -706,14 +706,15 @@ function done(){
       return;
     }
 
-    // Likert section comment key contains section title with underscores
+    // Likert section comment — key built from section title, catches all variations
     if(k.endsWith('__c')){
       var friendly=colNames[k];
-      if(friendly){ if(String(v).trim()) payload[friendly]=String(v).trim(); }
-      else if(k.indexOf('Likert')>-1||k.indexOf('Rate')>-1||k.indexOf('Culture_Communication')>-1){
+      if(friendly){ if(String(v).trim()) payload[friendly]=String(v).trim(); return; }
+      // Any key with Rate, Likert, Culture, Communication in it = Likert Comment
+      if(/Rate|Likert|Culture|Communication|Statement/i.test(k)){
         if(String(v).trim()) payload['Likert Comment']=String(v).trim();
       } else {
-        if(String(v).trim()) payload['Cmt_'+k.replace('__c','').replace(/[^a-zA-Z0-9]/g,'_')]=String(v).trim();
+        if(String(v).trim()) payload['Comment_'+k.replace('__c','').replace(/[^a-zA-Z0-9]/g,'_')]=String(v).trim();
       }
       return;
     }
