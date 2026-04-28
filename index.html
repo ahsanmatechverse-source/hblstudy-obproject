@@ -641,10 +641,11 @@ function done(){
   document.getElementById('success').style.display='flex';
 
   var payload = {};
-  payload.role = form.label;
-  payload.submitted = new Date().toLocaleString();
+  payload['Timestamp'] = new Date().toLocaleString();
+  payload['Role'] = form.label;
 
   var colNames = {
+    'role':'Role','submitted':'Timestamp',
     'pos':'Position','epos':'Position',
     'dept':'Department','edept':'Department',
     'yrs':'Years at HBL','eyrs':'Years at HBL',
