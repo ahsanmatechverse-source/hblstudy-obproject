@@ -688,13 +688,14 @@ function done(){
     var v=ans[k];
     if(v===null||v===undefined||v==='') return;
 
+  // Fix gap: iterate ALL 4 pairs (0-3), not just answered ones — prevents missing middle gaps
     if(gapMaps[k] && typeof v==='object' && !Array.isArray(v)){
       var pairs=gapMaps[k], cols=gapCols[k]||[];
-      Object.keys(v).forEach(function(i){
-        var c=v[i], pi=parseInt(i);
-        var txt=c==='a'?'A: '+pairs[pi].a:c==='b'?'B: '+pairs[pi].b:'';
-        if(txt) payload[cols[pi]||('Gap '+(pi+1))]=txt;
-      });
+      for(var pi=0; pi<pairs.length; pi++){
+        var c=v[pi]; // may be undefined if not answered
+        var txt=c==='a'?'A: '+pairs[pi].a : c==='b'?'B: '+pairs[pi].b : 'Not answered';
+        payload[cols[pi]||('Gap '+(pi+1))]=txt;
+      }
       return;
     }
 
@@ -721,20 +722,13 @@ function done(){
     if(typeof v!=='object') payload[colNames[k]||k]=v;
   });
 
-  // Use XMLHttpRequest with no-cors — most reliable on mobile
+  // XHR POST — reliable on all devices including mobile
   try {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', SHEET_URL, true);
     xhr.setRequestHeader('Content-Type', 'text/plain');
     xhr.send(JSON.stringify(payload));
   } catch(e1) {}
-
-  // Backup: image beacon (works even when XHR blocked)
-  try {
-    var encoded = encodeURIComponent(JSON.stringify(payload));
-    var img = new Image();
-    img.src = SHEET_URL + '?data=' + encoded;
-  } catch(e2) {}
 
   console.log('HBL Payload:', JSON.stringify(payload, null, 2));
 }
